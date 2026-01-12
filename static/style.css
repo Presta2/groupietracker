@@ -476,3 +476,206 @@ main.contenu h2 {
   border: 2px solid var(--border-color);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
 }
+
+.bloc-infos {
+  text-align: center;
+  color: var(--text-color);
+}
+
+.bloc-infos h2 {
+  font-size: 2.5rem;
+  margin-bottom: 24px;
+  color: var(--secondary-color);
+}
+
+.bloc-infos p {
+  font-size: 1.1rem;
+  margin: 12px 0;
+  color: var(--muted-color);
+}
+
+.bloc-infos strong {
+  color: var(--text-color);
+}
+
+/* Section carte de concert */
+.concert-section {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 40px;
+}
+
+.concert-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 40px;
+  border-radius: 24px;
+  background: rgba(22, 31, 60, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+              0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  text-align: center;
+  color: var(--text-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.concert-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(108, 242, 217, 0.15), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.concert-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4),
+              0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+.concert-icon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.concert-card h3 {
+  font-size: 1.5rem;
+  margin: 0 0 20px 0;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+  color: var(--secondary-color);
+}
+
+.concert-date {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 16px 0;
+  position: relative;
+  z-index: 1;
+  color: var(--text-color);
+  letter-spacing: 0.05em;
+}
+
+.concert-lieu {
+  font-size: 1.1rem;
+  margin-top: 12px;
+  position: relative;
+  z-index: 1;
+  color: var(--muted-color);
+  font-style: italic;
+}
+
+/* Setlist (Setlist.fm) */
+.setlist-section {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 40px;
+}
+
+.setlist-card {
+  margin-top: 8px;
+  background: linear-gradient(135deg, rgba(108, 242, 217, 0.18), rgba(22, 31, 60, 0.8));
+  border-color: rgba(108, 242, 217, 0.4);
+}
+
+.setlist-icon {
+  font-size: 3.2rem;
+}
+
+.setlist-songs {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+  text-align: left;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.setlist-songs li {
+  font-size: 0.95rem;
+  color: var(--muted-color);
+  padding: 2px 0;
+}
+
+.setlist-source {
+  margin-top: 16px;
+  font-size: 0.8rem;
+  color: var(--muted-color);
+  opacity: 0.85;
+}
+
+.setlist-source a {
+  color: var(--secondary-color);
+  text-decoration: none;
+}
+
+.setlist-source a:hover {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+  nav {
+    padding: 6px 12px;
+  }
+
+  h1 {
+    font-size: 1rem;
+  }
+
+  .image-container,
+  .text-container {
+    flex-basis: 100%;
+  }
+
+  #map {
+    width: 100%;
+  }
+
+  .grille-artistes,
+  .artists-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 colonnes en mobile */
+    gap: 20px;
+    padding: 28px 16px 60px;
+  }
+
+  .detail-artiste {
+    gap: 24px;
+  }
+
+  .bloc-visuel img {
+    max-width: 100%;
+  }
+
+  .bloc-infos h2 {
+    font-size: 1.8rem;
+  }
+
+  .concert-card {
+    max-width: 100%;
+    padding: 24px 28px;
+    margin: 0 16px;
+  }
+
+  .concert-icon {
+    font-size: 2.5rem;
+  }
+
+  .concert-date {
+    font-size: 1.4rem;
+  }
+}
+  
