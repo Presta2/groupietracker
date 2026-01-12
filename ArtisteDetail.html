@@ -21,7 +21,7 @@
           </ul>
         </nav>
       </header>
-      
+
       <main class="contenu">
         <section class="detail-artiste">
           <div class="bloc-visuel">
@@ -45,3 +45,24 @@
             <h3>Dernière setlist (Setlist.fm)</h3>
             <div class="concert-date">{{.Artiste.Setlist.Date}}</div>
             <div class="concert-lieu">{{.Artiste.Setlist.Lieu}}</div>
+
+            {{if .Artiste.Setlist.Chansons}}
+            <ul class="setlist-songs">
+              {{range .Artiste.Setlist.Chansons}}
+              <li>{{.}}</li>
+              {{end}}
+            </ul>
+            {{end}}
+
+            {{if .Artiste.Setlist.SourceURL}}
+            <div class="setlist-source">
+              Données par
+              <a href="{{.Artiste.Setlist.SourceURL}}" target="_blank" rel="noopener noreferrer">setlist.fm</a>
+            </div>
+            {{end}}
+          </div>
+        </section>
+        {{end}}
+      </main>
+</body>
+</html>
