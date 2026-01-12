@@ -1,5 +1,11 @@
 package main
 
+import (
+	"encoding/json"
+	"errors"
+	"net/http"
+)
+
 // Artiste représente les infos qu'on affichera côté front.
 type Artiste struct {
 	ID              int          `json:"id"`
@@ -37,4 +43,58 @@ type artisteAPI struct {
 	Membres      []string `json:"members"`
 	CreationDate int      `json:"creationDate"`
 	PremierAlbum string   `json:"firstAlbum"`
+}
+
+// Réponse brute de l'API (champs en anglais).
+type artisteAPI struct {
+	ID           int      `json:"id"`
+	Nom          string   `json:"name"`
+	Image        string   `json:"image"`
+	Membres      []string `json:"members"`
+	CreationDate int      `json:"creationDate"`
+	PremierAlbum string   `json:"firstAlbum"`
+}
+
+// récupère les artistes depuis l'API publique.
+func recupererArtistesAPI() ([]Artiste, error) {
+	const urlAPI = "https://groupietrackers.herokuapp.com/api/artists"
+
+	resp, err := http.Get(urlAPI)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("appel API artistes non OK")
+	}
+
+	var bruts []artisteAPI
+	if err := json.NewDecoder(resp.Body).Decode(&bruts); err != nil {
+		return nil, err
+	}
+
+	artistes := make([]Artiste, 0, len(bruts))
+	for _, a := range bruts {
+		artistes = append(artistes, Artiste{
+			ID:            a.ID,
+			Nom:           a.Nom,
+			Image:         a.Image,
+			Membres:       a.Membres,
+			AnneeCreation: a.CreationDate,
+			PremierAlbum:  a.PremierAlbum,
+			Genre:         "", // l'API ne fournit pas le genre
+		})
+	}
+	return artistes, nil
+}
+
+// Structure pour l'API relation (dates et lieux).
+type relationAPI struct {
+	DatesLocations map[string][]string `json:"datesLocations"`
+}
+
+// Structures pour l'API Setlist.fm (recherche de setlists par nom d'artiste).
+type setlistSearchResponse struct {
+	Setlist []setlistItem `json:"setlist"`
 }
