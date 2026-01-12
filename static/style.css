@@ -33,8 +33,8 @@ li {
 body {
   font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  padding: 56px 0 0 0; /* header réduit */
-  background: none; /* fond géré par html */
+  padding: 56px 0 0 0; 
+  background: none; 
   position: relative;
   color: var(--text-color);
   display: flex;
@@ -44,7 +44,7 @@ body {
   text-align: center;
 }
 
-/* Background image for homepage only — subtle blend/overlay to "fondre" */
+
 body.homepage {
   background-image: linear-gradient(rgba(3,6,19,0.48), rgba(5,10,31,0.48)), url('thumb-350-1344797.webp');
   background-size: cover;
@@ -55,13 +55,13 @@ body.homepage {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Ensure page content stays above overlays */
+
 body.homepage > * {
   position: relative;
   z-index: 1;
 }
 
-/* Optional soft vignette to better integrate the image with the darker UI */
+
 body.homepage::before {
   content: "";
   position: fixed;
@@ -83,32 +83,32 @@ header a {
   color: #ffffff;
 }
 
-/* Réinitialisation pour s'assurer que les styles par défaut ne perturbent pas la mise en page */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Styles du conteneur de navigation */
+
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 12px; /* header plus compact */
+  padding: 4px 12px; 
   background: var(--surface-color);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-color);
 }
 
-/* Styles pour le titre et les éléments de la liste de navigation pour prendre un espace équitable */
+
 nav .title,
 nav ul {
   flex: 1;
   text-align: center;
 }
 
-/* Styles pour le conteneur de la barre de recherche */
+
 nav #searchContainer {
   flex: 2;
   display: flex;
@@ -116,7 +116,7 @@ nav #searchContainer {
   align-items: center;
 }
 
-/* Style de la barre de recherche pour occuper la totalité de son conteneur */
+
 #searchBox {
   width: 100%;
   max-width: 260px;
@@ -136,7 +136,7 @@ nav #searchContainer {
   box-shadow: 0 0 12px rgba(108, 242, 217, 0.45);
 }
 
-/* Styles pour la liste de navigation */
+
 nav ul {
   display: flex;
   justify-content: flex-end;
@@ -144,7 +144,7 @@ nav ul {
   list-style-type: none;
 }
 
-/* Styles pour les liens dans la liste de navigation */
+
 nav a {
   color: var(--muted-color);
   text-decoration: none;
@@ -157,13 +157,13 @@ nav a:hover {
   color: var(--secondary-color);
 }
 
-/* Styles pour le placeholder de la barre de recherche */
+
 #searchBox::placeholder {
   color: rgba(255, 255, 255, 0.9);
 }
 
 h1 {
-  font-size: 1.1rem; /* réduit pour un header plus fin */
+  font-size: 1.1rem; 
   margin: 0;
   padding: 4px 0;
   letter-spacing: 0.04em;
