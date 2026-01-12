@@ -21,3 +21,27 @@
           </ul>
         </nav>
       </header>
+      
+      <main class="contenu">
+        <section class="detail-artiste">
+          <div class="bloc-visuel">
+            <img src="{{.Artiste.Image}}" alt="Photo de {{.Artiste.Nom}}" />
+          </div>
+          <div class="bloc-infos">
+            <h2>{{.Artiste.Nom}}</h2>
+            <p><strong>Année de création :</strong> {{.Artiste.AnneeCreation}}</p>
+            <p><strong>Premier album :</strong> {{.Artiste.PremierAlbum}}</p>
+            <p>
+              <strong>Membres :</strong>
+              {{range $index, $membre := .Artiste.Membres}}{{if $index}}, {{end}}{{$membre}}{{end}}
+            </p>
+          </div>
+        </section>
+
+        {{if .Artiste.Setlist}}
+        <section class="setlist-section">
+          <div class="concert-card setlist-card">
+            <div class="concert-icon setlist-icon">🎶</div>
+            <h3>Dernière setlist (Setlist.fm)</h3>
+            <div class="concert-date">{{.Artiste.Setlist.Date}}</div>
+            <div class="concert-lieu">{{.Artiste.Setlist.Lieu}}</div>
