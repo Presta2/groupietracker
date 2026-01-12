@@ -3,10 +3,15 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"html/template"
 	"log"
 	"net/http"
+	"net/url"
+	"os"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -209,4 +214,183 @@ func recupererDatesConcerts(id int) (*Concert, *Concert, error) {
 	}
 
 	return prochain, dernier, nil
+}
+
+// récupère une setlist récente pour un artiste via l'API Setlist.fm.
+// Utilise la variable d'environnement SETLIST_API_KEY pour la clé.
+func recupererSetlistPourArtiste(nom string) (*SetlistInfo, error) {
+	apiKey := os.Getenv("SETLIST_API_KEY")
+	// Fallback : utiliser la clé directement si pas de variable d'environnement (pour test)
+	if apiKey == "" {
+		apiKey = "kr25FuG2MKExIURHl_oeJRfmdwVkHt5qfKl_"
+		log.Printf("erreur SETLIST_API_KEY non définie ")
+	}
+	log.Printf("Recherche setlist pour: %s", nom)
+
+	baseURL := "https://api.setlist.fm/rest/1.0/search/setlists"
+	params := url.Values{}
+	params.Set("artistName", nom)
+	params.Set("p", "1")
+
+	req, err := http.NewRequest("GET", baseURL+"?"+params.Encode(), nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("x-api-key", apiKey)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("appel Setlist.fm non OK pour %s : %d", nom, resp.StatusCode)
+		return nil, nil
+	}
+
+	var resultat setlistSearchResponse
+	if err := json.NewDecoder(resp.Body).Decode(&resultat); err != nil {
+		return nil, err
+	}
+	if len(resultat.Setlist) == 0 {
+		log.Printf("⚠️ Aucune setlist trouvée pour %s", nom)
+		return nil, nil
+	}
+	log.Printf("✅ Setlist trouvée pour %s : %d résultat(s)", nom, len(resultat.Setlist))
+
+	sl := resultat.Setlist[0]
+
+	// Récupérer quelques titres de la setlist.
+	chansons := make([]string, 0, 12)
+	for _, s := range sl.Sets.Set {
+		for _, song := range s.Song {
+			if song.Name != "" {
+				chansons = append(chansons, song.Name)
+				if len(chansons) >= 12 {
+					break
+				}
+			}
+		}
+		if len(chansons) >= 12 {
+			break
+		}
+	}
+
+	lieu := sl.Venue.Name
+	if sl.Venue.City.Name != "" {
+		lieu = fmt.Sprintf("%s — %s", sl.Venue.Name, sl.Venue.City.Name)
+	}
+
+	info := &SetlistInfo{
+		Date:      sl.EventDate,
+		Lieu:      lieu,
+		Chansons:  chansons,
+		SourceURL: sl.URL,
+	}
+	return info, nil
+}
+
+// récupère un artiste par son ID en filtrant le résultat de l'API.
+func recupererArtisteParID(id int) (*Artiste, error) {
+	artistes, err := recupererArtistesAPI()
+	if err != nil {
+		return nil, err
+	}
+	for _, a := range artistes {
+		if a.ID == id {
+			// Récupérer les dates de concerts.
+			prochain, dernier, err := recupererDatesConcerts(id)
+			if err != nil {
+				log.Printf("erreur récupération dates concerts pour artiste %d : %v", id, err)
+				// On continue même si les dates échouent.
+			}
+			a.ProchainConcert = prochain
+			a.DernierConcert = dernier
+
+			// Récupérer une setlist récente via Setlist.fm (si clé configurée).
+			setlist, err := recupererSetlistPourArtiste(a.Nom)
+			if err != nil {
+				log.Printf("erreur récupération setlist pour artiste %s : %v", a.Nom, err)
+			}
+			a.Setlist = setlist
+
+			return &a, nil
+		}
+	}
+	return nil, errors.New("artiste introuvable")
+}
+
+// Prépare les templates HTML.
+var (
+	modeleAccueil  = template.Must(template.ParseFiles("index.html"))
+	modeleArtistes = template.Must(template.ParseFiles("Artists.html"))
+	modeleDetail   = template.Must(template.ParseFiles("ArtisteDetail.html"))
+)
+
+// Handler pour la page d'accueil.
+func pageAccueil(w http.ResponseWriter, r *http.Request) {
+	if err := modeleAccueil.Execute(w, nil); err != nil {
+		log.Printf("erreur rendu accueil : %v", err)
+		http.Error(w, "Erreur serveur", http.StatusInternalServerError)
+		return
+	}
+}
+
+// Handler pour la page artistes (rendu HTML avec la liste).
+func pageArtistes(w http.ResponseWriter, r *http.Request) {
+	artistes, err := recupererArtistesAPI()
+	if err != nil {
+		log.Printf("erreur récupération API artistes : %v", err)
+		http.Error(w, "Impossible de charger les artistes", http.StatusInternalServerError)
+		return
+	}
+
+	donnees := struct {
+		Artistes []Artiste
+	}{
+		Artistes: artistes,
+	}
+
+	if err := modeleArtistes.Execute(w, donnees); err != nil {
+		log.Printf("erreur rendu artistes : %v", err)
+		http.Error(w, "Erreur serveur", http.StatusInternalServerError)
+		return
+	}
+}
+
+// Handler pour la page détail d'un artiste.
+func pageArtisteDetail(w http.ResponseWriter, r *http.Request) {
+	// URL attendue : /artistes/{id}
+	segments := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+	if len(segments) != 2 {
+		http.NotFound(w, r)
+		return
+	}
+
+	id, err := strconv.Atoi(segments[1])
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	artiste, err := recupererArtisteParID(id)
+	if err != nil {
+		log.Printf("erreur récupération artiste %d : %v", id, err)
+		http.Error(w, "Artiste introuvable", http.StatusNotFound)
+		return
+	}
+
+	donnees := struct {
+		Artiste *Artiste
+	}{
+		Artiste: artiste,
+	}
+
+	if err := modeleDetail.Execute(w, donnees); err != nil {
+		log.Printf("erreur rendu détail artiste : %v", err)
+		http.Error(w, "Erreur serveur", http.StatusInternalServerError)
+		return
+	}
 }
