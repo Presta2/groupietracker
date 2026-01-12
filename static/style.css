@@ -1,0 +1,230 @@
+:root {
+  --bg-color: #050a1f;
+  --text-color: #f5f7ff;
+  --muted-color: rgba(245, 247, 255, 0.7);
+  --card-bg-color: #101a33;
+  --surface-color: rgba(22, 31, 60, 0.85);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --primary-color: #f04f9c;
+  --secondary-color: #6cf2d9;
+  --hover-color: #ff89c4;
+}
+
+html {
+  height: 100%;
+  background: radial-gradient(circle at top, #0d193b 0%, #050a1f 55%, #030613 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+}
+
+a,
+li {
+  text-decoration: none;
+}
+
+.members-list li,
+.locations-list li,
+.dates-list li {
+  list-style-type: none;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 56px 0 0 0; /* header réduit */
+  background: none; /* fond géré par html */
+  position: relative;
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+/* Background image for homepage only — subtle blend/overlay to "fondre" */
+body.homepage {
+  background-image: linear-gradient(rgba(3,6,19,0.48), rgba(5,10,31,0.48)), url('thumb-350-1344797.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: overlay;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ensure page content stays above overlays */
+body.homepage > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Optional soft vignette to better integrate the image with the darker UI */
+body.homepage::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.45) 100%);
+  mix-blend-mode: multiply;
+  z-index: 0;
+}
+
+header {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+}
+
+header a {
+  color: #ffffff;
+}
+
+/* Réinitialisation pour s'assurer que les styles par défaut ne perturbent pas la mise en page */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Styles du conteneur de navigation */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px; /* header plus compact */
+  background: var(--surface-color);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Styles pour le titre et les éléments de la liste de navigation pour prendre un espace équitable */
+nav .title,
+nav ul {
+  flex: 1;
+  text-align: center;
+}
+
+/* Styles pour le conteneur de la barre de recherche */
+nav #searchContainer {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style de la barre de recherche pour occuper la totalité de son conteneur */
+#searchBox {
+  width: 100%;
+  max-width: 260px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  color: var(--text-color);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px var(--border-color);
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#searchBox:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 12px rgba(108, 242, 217, 0.45);
+}
+
+/* Styles pour la liste de navigation */
+nav ul {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+  list-style-type: none;
+}
+
+/* Styles pour les liens dans la liste de navigation */
+nav a {
+  color: var(--muted-color);
+  text-decoration: none;
+  padding: 6px 12px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+nav a:hover {
+  color: var(--secondary-color);
+}
+
+/* Styles pour le placeholder de la barre de recherche */
+#searchBox::placeholder {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+h1 {
+  font-size: 1.1rem; /* réduit pour un header plus fin */
+  margin: 0;
+  padding: 4px 0;
+  letter-spacing: 0.04em;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-image: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: var(--bg-color);
+  border: none;
+  padding: 14px 34px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(240, 79, 156, 0.35);
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 18px 35px rgba(108, 242, 217, 0.35);
+}
+
+.btn:hover::after {
+  opacity: 1;
+}
+
+.btn span {
+  position: relative;
+  z-index: 1;
+}
+
+#texteAnime span {
+  font-weight: 700;
+  transition: color 0.3s ease;
+  color: var(--secondary-color);
+  font-size: 2.2rem;
+  margin: 0;
+  padding: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.artist-page {
+  margin-top: 100px;
+}
