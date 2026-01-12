@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/style.css">
+    <title>Artistes</title>
+</head>
+<body>
+    <header>
+        <nav>
+          <div class="title">
+            
+            <h1>
+              <a href="index.html" style="color: inherit; text-decoration: none"
+                >GROUPIE TRACKER</a
+              >
+            </h1>
+          </div>
+          
+          <div id="searchContainer">
+            <input
+              type="text"
+              id="searchBox"
+              placeholder="Rechercher un artiste..."
+            />
+          </div>
+          
+          <ul>
+            <li><a href="/" class="nav-link">Accueil</a></li>
+            <li><a href="/artistes" class="nav-link">Artistes</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main class="contenu">
+        <section>
+          <h2>Artistes</h2>
+          <div class="grille-artistes">
+            {{range .Artistes}}
+            <div class="card" data-name="{{.Nom}}" data-album="{{.PremierAlbum}}">
+              <a href="/artistes/{{.ID}}" class="card-link" style="text-decoration: none; color: inherit">
+                <div class="card-inner">
+                  <div class="card-front">
+                    <img src="{{.Image}}" alt="Image de {{.Nom}}" />
+                  </div>
