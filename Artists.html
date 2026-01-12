@@ -43,3 +43,50 @@
                   <div class="card-front">
                     <img src="{{.Image}}" alt="Image de {{.Nom}}" />
                   </div>
+                  <div class="card-back">
+                    <div>
+                      <h2>{{.Nom}}</h2>
+                      <p>
+                        <strong>Date de création:</strong><br />
+                        {{.AnneeCreation}}
+                      </p>
+                      <p>
+                        <strong>Premier album:</strong><br />
+                        {{.PremierAlbum}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+            {{end}}
+          </div>
+        </section>
+      </main>
+
+      <script>
+        (function () {
+          const searchBox = document.getElementById("searchBox");
+          if (!searchBox) return;
+
+          const cards = Array.from(document.querySelectorAll(".card"));
+
+          searchBox.addEventListener("input", function () {
+            const query = this.value.trim().toLowerCase();
+
+            cards.forEach((card) => {
+              const name = (card.dataset.name || "").toLowerCase();
+              const album = (card.dataset.album || "").toLowerCase();
+
+              const match =
+                query === "" ||
+                name.includes(query) ||
+                album.includes(query);
+
+              card.style.display = match ? "" : "none";
+            });
+          });
+        })();
+      </script>
+</body>
+</html>

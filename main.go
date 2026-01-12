@@ -394,3 +394,45 @@ func pageArtisteDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+// Endpoint JSON simple pour tester rapidement depuis le navigateur.
+func apiArtistes(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	artistes, err := recupererArtistesAPI()
+	if err != nil {
+		log.Printf("erreur récupération API artistes : %v", err)
+		http.Error(w, "Impossible de charger les artistes", http.StatusInternalServerError)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(artistes); err != nil {
+		log.Printf("erreur réponse JSON : %v", err)
+		http.Error(w, "Erreur serveur", http.StatusInternalServerError)
+		return
+	}
+}
+
+func main() {
+	mux := http.NewServeMux()
+
+	// Fichiers statiques (CSS, images...).
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+	// Pages principales.
+	mux.HandleFunc("/", pageAccueil)
+	mux.HandleFunc("/artistes", pageArtistes)
+	mux.HandleFunc("/artistes/", pageArtisteDetail)
+
+	// Petite API JSON.
+	mux.HandleFunc("/api/artistes", apiArtistes)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("Serveur démarré sur http://localhost:%s", port)
+	if err := http.ListenAndServe(":"+port, mux); err != nil {
+		log.Fatalf("serveur stoppé : %v", err)
+	}
+}
