@@ -228,3 +228,251 @@ h1 {
 .artist-page {
   margin-top: 100px;
 }
+
+.artists-container {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr)); 
+  gap: 28px;
+  padding: 40px 32px 80px;
+  justify-items: center;
+  align-items: start;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto 60px;
+}
+
+.members-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 0;
+}
+
+
+.card {
+  width: 220px;
+  aspect-ratio: 1;
+  perspective: 1000px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--surface-color);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.card-link,
+.card-inner,
+.card-front,
+.card-back {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+.card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  border-radius: 18px;
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  color: var(--text-color);
+}
+
+.card-back {
+  background-color: var(--card-bg-color);
+  transform: rotateY(180deg);
+  flex-direction: column;
+  padding: 20px;
+  gap: 10px;
+}
+
+.card:hover .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-back h3 {
+  font-size: 1.1em;
+  margin: 0;
+  padding: 0;
+  color: var(--secondary-color);
+}
+
+.card-back p {
+  font-size: 0.9em;
+  margin: 0;
+  color: var(--muted-color);
+  text-align: center;
+}
+
+.container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.image-artist {
+  border-radius: 22px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.image-container,
+.text-container {
+  flex-basis: 48%;
+}
+
+.image-container {
+  order: 1;
+  max-width: 60%;
+}
+
+.text-container {
+  text-align: left;
+  width: 58%;
+  order: 2;
+  color: var(--muted-color);
+}
+
+.events-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.events-list li {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.clickable-item {
+  cursor: pointer;
+}
+
+.view-on-map:before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.clickable-item:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: var(--secondary-color);
+}
+
+#map {
+  order: 3;
+  width: 100%;
+  margin-top: 20px;
+}
+
+#noResults {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+}
+
+footer {
+  flex-shrink: 0;
+  width: 100%;
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  margin-top: auto;
+}
+
+.main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.grille-artistes {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 28px;
+  padding: 40px 32px 80px;
+  justify-items: center;
+  align-items: start;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.card-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 18px;
+}
+
+main.contenu {
+  padding-top: 96px; 
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+main.contenu section {
+  width: 100%;
+  max-width: 1600px;
+  padding: 0 32px 60px;
+  margin: 0 auto;
+}
+
+main.contenu h2 {
+  text-align: center;
+  margin: 0 0 28px 0;
+}
+
+
+.detail-artiste {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.bloc-visuel img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 24px;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
