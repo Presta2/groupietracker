@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-// Artiste représente les infos qu'on affichera côté front.
+// Artiste représente les infos qu'on affichera côté front
 
 type Artiste struct {
 	ID              int          `json:"id"`
@@ -30,7 +30,7 @@ type Artiste struct {
 	Setlist         *SetlistInfo `json:"setlist"`
 }
 
-// Concert représente une date de concert avec lieu.
+// Concert représente une date de concert avec lieu
 
 type Concert struct {
 	Date        string `json:"date"`
@@ -45,7 +45,7 @@ type SetlistInfo struct {
 	SourceURL string   `json:"source_url"`
 }
 
-// Réponse brute de l'API (champs en anglais).
+// Réponse brute de l'API (champs en anglais)
 type artisteAPI struct {
 	ID           int      `json:"id"`
 	Nom          string   `json:"name"`
@@ -55,7 +55,7 @@ type artisteAPI struct {
 	PremierAlbum string   `json:"firstAlbum"`
 }
 
-// récupère les artistes depuis l'API publique.
+// récupère les artistes depuis l'API publique
 func recupererArtistesAPI() ([]Artiste, error) {
 	const urlAPI = "https://groupietrackers.herokuapp.com/api/artists"
 
@@ -89,12 +89,12 @@ func recupererArtistesAPI() ([]Artiste, error) {
 	return artistes, nil
 }
 
-// Structure pour l'API relation (dates et lieux).
+// Structure pour l'API relation (dates et lieux)
 type relationAPI struct {
 	DatesLocations map[string][]string `json:"datesLocations"`
 }
 
-// Structures pour l'API Setlist.fm (recherche de setlists par nom d'artiste).
+// Structures pour l'API Setlist.fm (recherche de setlists par nom d'artiste)
 type setlistSearchResponse struct {
 	Setlist []setlistItem `json:"setlist"`
 }
@@ -120,12 +120,11 @@ type setlistItem struct {
 	} `json:"sets"`
 }
 
-// Parse une date au format DD-MM-YYYY.
+// Parse une date au format DD-MM-YYYY
 func parserDate(dateStr string) (time.Time, error) {
 	return time.Parse("02-01-2006", dateStr)
 }
 
-// récupère les dates de concerts depuis l'API relation.
 func recupererDatesConcerts(id int) (*Concert, *Concert, error) {
 	urlAPI := "https://groupietrackers.herokuapp.com/api/relation/" + strconv.Itoa(id)
 
@@ -144,7 +143,6 @@ func recupererDatesConcerts(id int) (*Concert, *Concert, error) {
 		return nil, nil, err
 	}
 
-	// Collecter toutes les dates avec leurs lieux.
 	type dateLieu struct {
 		date    time.Time
 		lieu    string
@@ -178,7 +176,7 @@ func recupererDatesConcerts(id int) (*Concert, *Concert, error) {
 		return toutesDates[i].date.Before(toutesDates[j].date)
 	})
 
-	// Trouver le prochain concert la première date future.
+	// Trouver le prochain concert la première date future
 	var prochain *Concert
 	for _, dl := range toutesDates {
 		if dl.date.After(maintenant) {
@@ -191,7 +189,7 @@ func recupererDatesConcerts(id int) (*Concert, *Concert, error) {
 		}
 	}
 
-	// Trouver le dernier concert la dernière date passé.
+	// Trouver le dernier concert la dernière date passé
 	var dernier *Concert
 	for i := len(toutesDates) - 1; i >= 0; i-- {
 		dl := toutesDates[i]
@@ -208,7 +206,7 @@ func recupererDatesConcerts(id int) (*Concert, *Concert, error) {
 	return prochain, dernier, nil
 }
 
-// Utilise la variable d'environnement SETLIST_API_KEY pour la clé.
+// Utilise la variable d'environnement SETLIST_API_KEY pour la clé
 func recupererSetlistPourArtiste(nom string) (*SetlistInfo, error) {
 	apiKey := os.Getenv("SETLIST_API_KEY")
 
@@ -253,7 +251,7 @@ func recupererSetlistPourArtiste(nom string) (*SetlistInfo, error) {
 
 	sl := resultat.Setlist[0]
 
-	//Récupérer quelques titres de la setlist.
+	//Récupérer quelques titres de la setlist
 	chansons := make([]string, 0, 12)
 	for _, s := range sl.Sets.Set {
 		for _, song := range s.Song {
@@ -290,11 +288,11 @@ func recupererArtisteParID(id int) (*Artiste, error) {
 	}
 	for _, a := range artistes {
 		if a.ID == id {
-			// Récupérer les dates de concerts.
+			// Récupérer les dates de concerts
 			prochain, dernier, err := recupererDatesConcerts(id)
 			if err != nil {
 				log.Printf("erreur récupération dates concerts pour artiste %d : %v", id, err)
-				// On continue même si les dates échouent.
+				// On continue même si les dates échouent
 			}
 			a.ProchainConcert = prochain
 			a.DernierConcert = dernier
@@ -311,14 +309,13 @@ func recupererArtisteParID(id int) (*Artiste, error) {
 	return nil, errors.New("artiste introuvable")
 }
 
-// Prépare les templates HTML
 var (
 	modeleAccueil  = template.Must(template.ParseFiles("index.html"))
 	modeleArtistes = template.Must(template.ParseFiles("Artists.html"))
 	modeleDetail   = template.Must(template.ParseFiles("ArtisteDetail.html"))
 )
 
-// Handler page d'accueil.
+// Handler page d'accueil
 func pageAccueil(w http.ResponseWriter, r *http.Request) {
 	if err := modeleAccueil.Execute(w, nil); err != nil {
 		log.Printf("erreur rendu accueil : %v", err)
@@ -327,7 +324,7 @@ func pageAccueil(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// page artistes (rendu HTML avec la liste).
+// page artistes (rendu HTML avec la liste
 func pageArtistes(w http.ResponseWriter, r *http.Request) {
 	artistes, err := recupererArtistesAPI()
 	if err != nil {
@@ -349,7 +346,7 @@ func pageArtistes(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// page détail d'un artiste.
+// page détail d'un artiste
 func pageArtisteDetail(w http.ResponseWriter, r *http.Request) {
 
 	segments := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
@@ -404,15 +401,13 @@ func apiArtistes(w http.ResponseWriter, r *http.Request) {
 func main() {
 	mux := http.NewServeMux()
 
-	// Fichiers statiques (CSS, images...).
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-	// Pages principales.
+	// Pages principales
 	mux.HandleFunc("/", pageAccueil)
 	mux.HandleFunc("/artistes", pageArtistes)
 	mux.HandleFunc("/artistes/", pageArtisteDetail)
 
-	// Petite API JSON.
 	mux.HandleFunc("/api/artistes", apiArtistes)
 
 	port := os.Getenv("PORT")
