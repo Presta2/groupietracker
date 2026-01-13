@@ -246,10 +246,10 @@ func recupererSetlistPourArtiste(nom string) (*SetlistInfo, error) {
 		return nil, err
 	}
 	if len(resultat.Setlist) == 0 {
-		log.Printf("⚠️ Aucune setlist trouvée pour %s", nom)
+		log.Printf(" Aucune setlist trouvée pour %s", nom)
 		return nil, nil
 	}
-	log.Printf("✅ Setlist trouvée pour %s : %d résultat(s)", nom, len(resultat.Setlist))
+	log.Printf(" Setlist trouvée pour %s : %d résultat(s)", nom, len(resultat.Setlist))
 
 	sl := resultat.Setlist[0]
 
