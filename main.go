@@ -16,6 +16,7 @@ import (
 )
 
 // Artiste représente les infos qu'on affichera côté front.
+
 type Artiste struct {
 	ID              int          `json:"id"`
 	Nom             string       `json:"nom"`
@@ -23,20 +24,20 @@ type Artiste struct {
 	Membres         []string     `json:"membres"`
 	AnneeCreation   int          `json:"annee_creation"`
 	PremierAlbum    string       `json:"premier_album"`
-	Genre           string       `json:"genre"` // champ non fourni par l'API, restera vide
+	Genre           string       `json:"genre"`
 	ProchainConcert *Concert     `json:"prochain_concert"`
 	DernierConcert  *Concert     `json:"dernier_concert"`
 	Setlist         *SetlistInfo `json:"setlist"`
 }
 
 // Concert représente une date de concert avec lieu.
+
 type Concert struct {
 	Date        string `json:"date"`
 	Lieu        string `json:"lieu"`
 	EstProchain bool   `json:"est_prochain"`
 }
 
-// SetlistInfo représente une setlist simplifiée provenant de l'API Setlist.fm.
 type SetlistInfo struct {
 	Date      string   `json:"date"`
 	Lieu      string   `json:"lieu"`
@@ -82,7 +83,7 @@ func recupererArtistesAPI() ([]Artiste, error) {
 			Membres:       a.Membres,
 			AnneeCreation: a.CreationDate,
 			PremierAlbum:  a.PremierAlbum,
-			Genre:         "", // l'API ne fournit pas le genre
+			Genre:         "",
 		})
 	}
 	return artistes, nil
@@ -97,6 +98,7 @@ type relationAPI struct {
 type setlistSearchResponse struct {
 	Setlist []setlistItem `json:"setlist"`
 }
+
 type setlistItem struct {
 	EventDate string `json:"eventDate"`
 	Venue     struct {
@@ -176,7 +178,7 @@ func recupererDatesConcerts(id int) (*Concert, *Concert, error) {
 		return toutesDates[i].date.Before(toutesDates[j].date)
 	})
 
-	// Trouver le prochain concert (première date future).
+	// Trouver le prochain concert la première date future.
 	var prochain *Concert
 	for _, dl := range toutesDates {
 		if dl.date.After(maintenant) {
@@ -189,7 +191,7 @@ func recupererDatesConcerts(id int) (*Concert, *Concert, error) {
 		}
 	}
 
-	// Trouver le dernier concert (dernière date passée).
+	// Trouver le dernier concert la dernière date passé.
 	var dernier *Concert
 	for i := len(toutesDates) - 1; i >= 0; i-- {
 		dl := toutesDates[i]
@@ -206,16 +208,15 @@ func recupererDatesConcerts(id int) (*Concert, *Concert, error) {
 	return prochain, dernier, nil
 }
 
-// récupère une setlist récente pour un artiste via l'API Setlist.fm.
 // Utilise la variable d'environnement SETLIST_API_KEY pour la clé.
 func recupererSetlistPourArtiste(nom string) (*SetlistInfo, error) {
 	apiKey := os.Getenv("SETLIST_API_KEY")
-	// Fallback : utiliser la clé directement si pas de variable d'environnement (pour test)
+
 	if apiKey == "" {
 		apiKey = "kr25FuG2MKExIURHl_oeJRfmdwVkHt5qfKl_"
-		log.Printf("erreur SETLIST_API_KEY non définie ")
+		log.Printf("⚠️ SETLIST_API_KEY non définie - utilisation clé hardcodée (temporaire)")
 	}
-	log.Printf("Recherche setlist pour: %s", nom)
+	log.Printf("🔍 Recherche setlist pour: %s", nom)
 
 	baseURL := "https://api.setlist.fm/rest/1.0/search/setlists"
 	params := url.Values{}
@@ -282,7 +283,7 @@ func recupererSetlistPourArtiste(nom string) (*SetlistInfo, error) {
 	return info, nil
 }
 
-// récupère un artiste par son ID en filtrant le résultat de l'API.
+// récupère un artiste par son ID en filtrant l'API.
 func recupererArtisteParID(id int) (*Artiste, error) {
 	artistes, err := recupererArtistesAPI()
 	if err != nil {
@@ -299,7 +300,6 @@ func recupererArtisteParID(id int) (*Artiste, error) {
 			a.ProchainConcert = prochain
 			a.DernierConcert = dernier
 
-			// Récupérer une setlist récente via Setlist.fm (si clé configurée).
 			setlist, err := recupererSetlistPourArtiste(a.Nom)
 			if err != nil {
 				log.Printf("erreur récupération setlist pour artiste %s : %v", a.Nom, err)
@@ -312,14 +312,14 @@ func recupererArtisteParID(id int) (*Artiste, error) {
 	return nil, errors.New("artiste introuvable")
 }
 
-// Prépare les templates HTML.
+// Prépare les templates HTML
 var (
 	modeleAccueil  = template.Must(template.ParseFiles("index.html"))
 	modeleArtistes = template.Must(template.ParseFiles("Artists.html"))
 	modeleDetail   = template.Must(template.ParseFiles("ArtisteDetail.html"))
 )
 
-// Handler pour la page d'accueil.
+// Handler page d'accueil.
 func pageAccueil(w http.ResponseWriter, r *http.Request) {
 	if err := modeleAccueil.Execute(w, nil); err != nil {
 		log.Printf("erreur rendu accueil : %v", err)
@@ -328,7 +328,7 @@ func pageAccueil(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Handler pour la page artistes (rendu HTML avec la liste).
+// page artistes (rendu HTML avec la liste).
 func pageArtistes(w http.ResponseWriter, r *http.Request) {
 	artistes, err := recupererArtistesAPI()
 	if err != nil {
@@ -350,9 +350,9 @@ func pageArtistes(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Handler pour la page détail d'un artiste.
+// page détail d'un artiste.
 func pageArtisteDetail(w http.ResponseWriter, r *http.Request) {
-	// URL attendue : /artistes/{id}
+
 	segments := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
 	if len(segments) != 2 {
 		http.NotFound(w, r)
