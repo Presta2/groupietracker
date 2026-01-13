@@ -214,9 +214,9 @@ func recupererSetlistPourArtiste(nom string) (*SetlistInfo, error) {
 
 	if apiKey == "" {
 		apiKey = "kr25FuG2MKExIURHl_oeJRfmdwVkHt5qfKl_"
-		log.Printf("⚠️ SETLIST_API_KEY non définie - utilisation clé hardcodée (temporaire)")
+		log.Printf(" SETLIST_API_KEY non définie ")
 	}
-	log.Printf("🔍 Recherche setlist pour: %s", nom)
+	log.Printf(" Recherche setlist pour: %s", nom)
 
 	baseURL := "https://api.setlist.fm/rest/1.0/search/setlists"
 	params := url.Values{}
@@ -253,7 +253,7 @@ func recupererSetlistPourArtiste(nom string) (*SetlistInfo, error) {
 
 	sl := resultat.Setlist[0]
 
-	// Récupérer quelques titres de la setlist.
+	//Récupérer quelques titres de la setlist.
 	chansons := make([]string, 0, 12)
 	for _, s := range sl.Sets.Set {
 		for _, song := range s.Song {
@@ -283,7 +283,6 @@ func recupererSetlistPourArtiste(nom string) (*SetlistInfo, error) {
 	return info, nil
 }
 
-// récupère un artiste par son ID en filtrant l'API.
 func recupererArtisteParID(id int) (*Artiste, error) {
 	artistes, err := recupererArtistesAPI()
 	if err != nil {
@@ -385,7 +384,7 @@ func pageArtisteDetail(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Endpoint JSON simple pour tester rapidement depuis le navigateur.
+// JSON
 func apiArtistes(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	artistes, err := recupererArtistesAPI()
