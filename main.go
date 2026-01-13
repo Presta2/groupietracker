@@ -54,16 +54,6 @@ type artisteAPI struct {
 	PremierAlbum string   `json:"firstAlbum"`
 }
 
-// Réponse brute de l'API (champs en anglais).
-type artisteAPI struct {
-	ID           int      `json:"id"`
-	Nom          string   `json:"name"`
-	Image        string   `json:"image"`
-	Membres      []string `json:"members"`
-	CreationDate int      `json:"creationDate"`
-	PremierAlbum string   `json:"firstAlbum"`
-}
-
 // récupère les artistes depuis l'API publique.
 func recupererArtistesAPI() ([]Artiste, error) {
 	const urlAPI = "https://groupietrackers.herokuapp.com/api/artists"
