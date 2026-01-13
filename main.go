@@ -54,16 +54,6 @@ type artisteAPI struct {
 	PremierAlbum string   `json:"firstAlbum"`
 }
 
-// Réponse brute de l'API (champs en anglais).
-type artisteAPI struct {
-	ID           int      `json:"id"`
-	Nom          string   `json:"name"`
-	Image        string   `json:"image"`
-	Membres      []string `json:"members"`
-	CreationDate int      `json:"creationDate"`
-	PremierAlbum string   `json:"firstAlbum"`
-}
-
 // récupère les artistes depuis l'API publique.
 func recupererArtistesAPI() ([]Artiste, error) {
 	const urlAPI = "https://groupietrackers.herokuapp.com/api/artists"
@@ -107,6 +97,7 @@ type relationAPI struct {
 type setlistSearchResponse struct {
 	Setlist []setlistItem `json:"setlist"`
 }
+
 type setlistItem struct {
 	EventDate string `json:"eventDate"`
 	Venue     struct {
@@ -223,9 +214,9 @@ func recupererSetlistPourArtiste(nom string) (*SetlistInfo, error) {
 	// Fallback : utiliser la clé directement si pas de variable d'environnement (pour test)
 	if apiKey == "" {
 		apiKey = "kr25FuG2MKExIURHl_oeJRfmdwVkHt5qfKl_"
-		log.Printf("erreur SETLIST_API_KEY non définie ")
+		log.Printf("⚠️ SETLIST_API_KEY non définie - utilisation clé hardcodée (temporaire)")
 	}
-	log.Printf("Recherche setlist pour: %s", nom)
+	log.Printf("🔍 Recherche setlist pour: %s", nom)
 
 	baseURL := "https://api.setlist.fm/rest/1.0/search/setlists"
 	params := url.Values{}
